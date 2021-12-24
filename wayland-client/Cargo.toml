@@ -20,6 +20,12 @@ nix = "0.23"
 futures-channel = "0.3.16"
 log = "0.4"
 
+[features]
+# Use the wayland system library
+system = ["wayland-backend/client_system"]
+# Dynamically link to the wayland system library.
+dlopen = ["system", "wayland-backend/dlopen"]
+
 [dev-dependencies]
 wayland-protocols = { version = "0.30.0-dev", path = "../wayland-protocols", features = ["client"] }
 tempfile = "3.2"
