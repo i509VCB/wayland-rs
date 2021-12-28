@@ -33,7 +33,7 @@ fn main() {
     assert_eq!(output.interface, "wl_output");
     assert_eq!(output.version, 2);
 
-    my_client.kill(
+    my_client.post_error(
         &mut server.display.handle(),
         ways::backend::protocol::ProtocolError {
             code: 0,
