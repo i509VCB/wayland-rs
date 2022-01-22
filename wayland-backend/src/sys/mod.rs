@@ -16,7 +16,9 @@ static RUST_MANAGED: u8 = 42;
 unsafe fn free_arrays(signature: &[ArgumentType], arglist: &[wl_argument]) {
     for (typ, arg) in signature.iter().zip(arglist.iter()) {
         if let ArgumentType::Array(_) = typ {
-            let _ = Box::from_raw(arg.a as *mut wl_array);
+            // SAFETY: wl_array is Sized, therefore it is ABI compatible with Box<wl_array>.
+            // See https://doc.rust-lang.org/std/boxed/index.html#memory-layout
+            let _ = unsafe { Box::from_raw(arg.a as *mut wl_array) };
         }
     }
 }

@@ -235,15 +235,18 @@ impl ObjectId {
     ///
     /// The provided pointer must be a valid pointer to a `wl_resource` and remain valid for as
     /// long as the retrieved `ObjectId` is used.
+    ///
+    /// The `c_ptr` field of the provided interface must be valid.
     pub unsafe fn from_ptr(
         interface: &'static Interface,
         ptr: *mut wl_resource,
     ) -> Result<ObjectId, InvalidId> {
         let iface_c_ptr =
             interface.c_ptr.expect("[wayland-backend-sys] Cannot use Interface without c_ptr!");
-        let ptr_iface_name =
-            CStr::from_ptr(ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_class, ptr));
-        let provided_iface_name = CStr::from_ptr(iface_c_ptr.name);
+        let ptr_iface_name = unsafe {
+            CStr::from_ptr(ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_class, ptr))
+        };
+        let provided_iface_name = unsafe { CStr::from_ptr(iface_c_ptr.name) };
         if ptr_iface_name != provided_iface_name {
             return Err(InvalidId);
         }
@@ -265,7 +268,7 @@ impl ObjectId {
             //
             let udata = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_user_data, ptr)
                 as *mut ResourceUserData<()>;
-            Some((*udata).alive.clone())
+            Some(unsafe { &(*udata).alive }.clone())
         } else {
             None
         };
@@ -997,7 +1000,7 @@ unsafe fn init_client<D>(client: *mut wl_client, data: Arc<dyn ClientData<D>>) -
     let client_data = Box::into_raw(Box::new(ClientUserData { alive: alive.clone(), data }));
 
     let listener = signal::rust_listener_create(client_destroy_notify::<D>);
-    signal::rust_listener_set_user_data(listener, client_data as *mut c_void);
+    unsafe { signal::rust_listener_set_user_data(listener, client_data as *mut c_void) };
 
     ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_client_add_destroy_listener, client, listener);
 
@@ -1005,8 +1008,8 @@ unsafe fn init_client<D>(client: *mut wl_client, data: Arc<dyn ClientData<D>>) -
 }
 
 unsafe fn client_id_from_ptr<D>(client: *mut wl_client) -> Option<ClientId> {
-    client_user_data::<D>(client)
-        .map(|udata| ClientId { ptr: client, alive: (*udata).alive.clone() })
+    unsafe { client_user_data::<D>(client) }
+        .map(|udata| ClientId { ptr: client, alive: unsafe { &(*udata).alive }.clone() })
 }
 
 unsafe fn client_user_data<D>(client: *mut wl_client) -> Option<*mut ClientUserData<D>> {
@@ -1020,16 +1023,17 @@ unsafe fn client_user_data<D>(client: *mut wl_client) -> Option<*mut ClientUserD
         client_destroy_notify::<D>
     );
     if !listener.is_null() {
-        Some(signal::rust_listener_get_user_data(listener) as *mut ClientUserData<D>)
+        Some(unsafe { signal::rust_listener_get_user_data(listener) } as *mut ClientUserData<D>)
     } else {
         None
     }
 }
 
 unsafe extern "C" fn client_destroy_notify<D>(listener: *mut wl_listener, client_ptr: *mut c_void) {
-    let data =
-        Box::from_raw(signal::rust_listener_get_user_data(listener) as *mut ClientUserData<D>);
-    signal::rust_listener_destroy(listener);
+    let data = unsafe {
+        Box::from_raw(signal::rust_listener_get_user_data(listener) as *mut ClientUserData<D>)
+    };
+    unsafe { signal::rust_listener_destroy(listener) };
     // only notify the killing if it was not already
     if data.alive.load(Ordering::Acquire) {
         data.alive.store(false, Ordering::Release);
@@ -1046,11 +1050,11 @@ unsafe extern "C" fn global_bind<D>(
     version: u32,
     id: u32,
 ) {
-    let global_udata = &mut *(data as *mut GlobalUserData<D>);
+    let global_udata = unsafe { &mut *(data as *mut GlobalUserData<D>) };
 
     let global_id = GlobalId { alive: global_udata.alive.clone(), ptr: global_udata.ptr };
 
-    let client_id = match client_id_from_ptr::<D>(client) {
+    let client_id = match unsafe { client_id_from_ptr::<D>(client) } {
         Some(id) => id,
         None => return,
     };
@@ -1059,8 +1063,8 @@ unsafe extern "C" fn global_bind<D>(
     let interface_ptr = global_udata.interface.c_ptr.unwrap();
 
     HANDLE.with(|&(handle_ptr, data_ptr)| {
-        let handle = &mut *(handle_ptr as *mut Handle<D>);
-        let data = &mut *(data_ptr as *mut D);
+        let handle = unsafe { &mut *(handle_ptr as *mut Handle<D>) };
+        let data = unsafe { &mut *(data_ptr as *mut D) };
         // create the object
         let resource = ffi_dispatch!(
             WAYLAND_SERVER_HANDLE,
@@ -1070,10 +1074,10 @@ unsafe extern "C" fn global_bind<D>(
             version as i32,
             id
         );
-        let (object_id, udata) = init_resource(resource, global_udata.interface, None);
+        let (object_id, udata) = unsafe { init_resource(resource, global_udata.interface, None) };
         let obj_data =
             global_udata.handler.clone().bind(handle, data, client_id, global_id, object_id);
-        (*udata).data = obj_data;
+        unsafe { (*udata).data = obj_data };
     })
 }
 
@@ -1082,15 +1086,17 @@ unsafe extern "C" fn global_filter<D>(
     global: *const wl_global,
     _: *mut c_void,
 ) -> bool {
-    let client_udata = match client_user_data::<D>(client as *mut _) {
-        Some(id) => &*id,
+    let client_udata = match unsafe { client_user_data::<D>(client as *mut _) } {
+        Some(id) => unsafe { &*id },
         None => return false,
     };
 
     let client_id = ClientId { ptr: client as *mut _, alive: client_udata.alive.clone() };
 
-    let global_udata = &*(ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_global_get_user_data, global)
-        as *mut GlobalUserData<D>);
+    let global_udata = unsafe {
+        &*(ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_global_get_user_data, global)
+            as *mut GlobalUserData<D>)
+    };
 
     let global_id = GlobalId { ptr: global as *mut wl_global, alive: global_udata.alive.clone() };
 
@@ -1133,7 +1139,8 @@ unsafe extern "C" fn resource_dispatcher<D>(
     let resource = resource as *mut wl_resource;
     let udata_ptr = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_user_data, resource)
         as *mut ResourceUserData<D>;
-    let udata = &mut *udata_ptr;
+    // TODO: Question about Box -> ptr
+    let udata = unsafe { &mut *udata_ptr };
     let client = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_client, resource);
     let resource_id = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_id, resource);
     let version = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_version, resource);
@@ -1151,23 +1158,29 @@ unsafe extern "C" fn resource_dispatcher<D>(
     let mut arg_interfaces = message_desc.arg_interfaces.iter().copied();
     let mut created = None;
     for (i, typ) in message_desc.signature.iter().enumerate() {
+        // TODO: How to describe this add
+        let arg = unsafe { &*args.add(i) };
+
         match typ {
-            ArgumentType::Uint => parsed_args.push(Argument::Uint((*args.add(i)).u)),
-            ArgumentType::Int => parsed_args.push(Argument::Int((*args.add(i)).i)),
-            ArgumentType::Fixed => parsed_args.push(Argument::Fixed((*args.add(i)).f)),
-            ArgumentType::Fd => parsed_args.push(Argument::Fd((*args.add(i)).h)),
+            ArgumentType::Uint => parsed_args.push(Argument::Uint(unsafe { arg.u })),
+            ArgumentType::Int => parsed_args.push(Argument::Int(unsafe { arg.i })),
+            ArgumentType::Fixed => parsed_args.push(Argument::Fixed(unsafe { arg.f })),
+            ArgumentType::Fd => parsed_args.push(Argument::Fd(unsafe { arg.h })),
             ArgumentType::Array(_) => {
-                let array = &*((*args.add(i)).a);
-                let content = std::slice::from_raw_parts(array.data as *mut u8, array.size);
+                let array = unsafe { &*arg.a };
+                // TODO
+                let content =
+                    unsafe { std::slice::from_raw_parts(array.data as *mut u8, array.size) };
                 parsed_args.push(Argument::Array(Box::new(content.into())));
             }
             ArgumentType::Str(_) => {
-                let ptr = (*args.add(i)).s;
-                let cstr = std::ffi::CStr::from_ptr(ptr);
+                let ptr = unsafe { arg.s };
+                // SAFETY: cstr.into() makes an owned copy of the string, ensuring the lifetime is correct.
+                let cstr = unsafe { std::ffi::CStr::from_ptr(ptr) };
                 parsed_args.push(Argument::Str(Box::new(cstr.into())));
             }
             ArgumentType::Object(_) => {
-                let obj = (*args.add(i)).o as *mut wl_resource;
+                let obj = unsafe { arg.o } as *mut wl_resource;
                 if !obj.is_null() {
                     // retrieve the object relevant info
                     let obj_id = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_id, obj);
@@ -1190,12 +1203,13 @@ unsafe extern "C" fn resource_dispatcher<D>(
                         }));
                     } else {
                         // local
-                        let obj_udata = &mut *(ffi_dispatch!(
-                            WAYLAND_SERVER_HANDLE,
-                            wl_resource_get_user_data,
-                            obj
-                        )
-                            as *mut ResourceUserData<D>);
+                        let obj_udata = unsafe {
+                            &mut *(ffi_dispatch!(
+                                WAYLAND_SERVER_HANDLE,
+                                wl_resource_get_user_data,
+                                obj
+                            ) as *mut ResourceUserData<D>)
+                        };
                         parsed_args.push(Argument::Object(ObjectId {
                             alive: Some(obj_udata.alive.clone()),
                             ptr: obj,
@@ -1214,7 +1228,7 @@ unsafe extern "C" fn resource_dispatcher<D>(
                 }
             }
             ArgumentType::NewId(_) => {
-                let new_id = (*args.add(i)).n;
+                let new_id = unsafe { arg.n };
                 // create the object
                 if new_id != 0 {
                     let child_interface = match message_desc.child_interface {
@@ -1231,7 +1245,7 @@ unsafe extern "C" fn resource_dispatcher<D>(
                             version,
                             new_id
                         );
-                        init_resource::<D>(resource, child_interface, None)
+                        unsafe { init_resource::<D>(resource, child_interface, None) }
                     });
                     created = Some((child_id.clone(), child_data_ptr));
                     parsed_args.push(Argument::NewId(child_id));
@@ -1254,11 +1268,11 @@ unsafe extern "C" fn resource_dispatcher<D>(
         alive: Some(udata.alive.clone()),
     };
 
-    let client_id = client_id_from_ptr::<D>(client).unwrap();
+    let client_id = unsafe { client_id_from_ptr::<D>(client) }.unwrap();
 
     let ret = HANDLE.with(|&(handle_ptr, data_ptr)| {
-        let handle = &mut *(handle_ptr as *mut Handle<D>);
-        let data = &mut *(data_ptr as *mut D);
+        let handle = unsafe { &mut *(handle_ptr as *mut Handle<D>) };
+        let data = unsafe { &mut *(data_ptr as *mut D) };
         udata.data.clone().request(
             handle,
             data,
@@ -1273,7 +1287,8 @@ unsafe extern "C" fn resource_dispatcher<D>(
 
     match (created, ret) {
         (Some((_, child_udata_ptr)), Some(child_data)) => {
-            (*child_udata_ptr).data = child_data;
+            // SAFETY: child_udata_ptr was just initialized
+            unsafe { (*child_udata_ptr).data = child_data };
         }
         (Some((child_id, _)), None) => {
             panic!("Callback creating object {} did not provide any object data.", child_id);
@@ -1288,13 +1303,14 @@ unsafe extern "C" fn resource_dispatcher<D>(
 }
 
 unsafe extern "C" fn resource_destructor<D>(resource: *mut wl_resource) {
-    let udata =
+    let udata = unsafe {
         Box::from_raw(ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_user_data, resource)
-            as *mut ResourceUserData<D>);
+            as *mut ResourceUserData<D>)
+    };
     let id = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_id, resource);
     let client = ffi_dispatch!(WAYLAND_SERVER_HANDLE, wl_resource_get_client, resource);
     // if this destructor is invoked during cleanup, the client ptr is no longer valid
-    let client_id = client_id_from_ptr::<D>(client)
+    let client_id = unsafe { client_id_from_ptr::<D>(client) }
         .unwrap_or(ClientId { ptr: std::ptr::null_mut(), alive: Arc::new(AtomicBool::new(false)) });
     udata.alive.store(false, Ordering::Release);
     let object_id = ObjectId {

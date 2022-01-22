@@ -127,18 +127,23 @@ impl ObjectId {
     ///
     /// The provided pointer must be a valid pointer to a `wl_resource` and remain valid for as
     /// long as the retrieved `ObjectId` is used.
+    ///
+    /// The `c_ptr` field of the provided interface must be valid.
     pub unsafe fn from_ptr(
         interface: &'static Interface,
         ptr: *mut wl_proxy,
     ) -> Result<ObjectId, InvalidId> {
-        let ptr_iface_name =
-            CStr::from_ptr(ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_class, ptr));
-        let provided_iface_name = CStr::from_ptr(
-            interface
-                .c_ptr
-                .expect("[wayland-backend-sys] Cannot use Interface without c_ptr!")
-                .name,
-        );
+        let ptr_iface_name = unsafe {
+            CStr::from_ptr(ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_class, ptr))
+        };
+        let provided_iface_name = unsafe {
+            CStr::from_ptr(
+                interface
+                    .c_ptr
+                    .expect("[wayland-backend-sys] Cannot use Interface without c_ptr!")
+                    .name,
+            )
+        };
         if ptr_iface_name != provided_iface_name {
             return Err(InvalidId);
         }
@@ -150,8 +155,10 @@ impl ObjectId {
             == &RUST_MANAGED as *const u8 as *const _;
 
         let alive = if is_rust_managed {
-            let udata = &*(ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_user_data, ptr)
-                as *mut ProxyUserData);
+            let udata = unsafe {
+                &*(ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_user_data, ptr)
+                    as *mut ProxyUserData)
+            };
             Some(udata.alive.clone())
         } else {
             None
@@ -838,7 +845,8 @@ unsafe extern "C" fn dispatcher_func(
     let proxy = proxy as *mut wl_proxy;
     let udata_ptr =
         ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_user_data, proxy) as *mut ProxyUserData;
-    let udata = &mut *udata_ptr;
+    // TODO: Question about Box -> ptr
+    let udata = unsafe { &mut *udata_ptr };
     let interface = udata.interface;
     let message_desc = match interface.events.get(opcode as usize) {
         Some(desc) => desc,
@@ -853,23 +861,29 @@ unsafe extern "C" fn dispatcher_func(
     let mut arg_interfaces = message_desc.arg_interfaces.iter().copied();
     let mut created = None;
     for (i, typ) in message_desc.signature.iter().enumerate() {
+        // TODO: How to describe this add
+        let arg = unsafe { &*args.add(i) };
+
         match typ {
-            ArgumentType::Uint => parsed_args.push(Argument::Uint((*args.add(i)).u)),
-            ArgumentType::Int => parsed_args.push(Argument::Int((*args.add(i)).i)),
-            ArgumentType::Fixed => parsed_args.push(Argument::Fixed((*args.add(i)).f)),
-            ArgumentType::Fd => parsed_args.push(Argument::Fd((*args.add(i)).h)),
+            ArgumentType::Uint => parsed_args.push(Argument::Uint(unsafe { arg.u })),
+            ArgumentType::Int => parsed_args.push(Argument::Int(unsafe { arg.i })),
+            ArgumentType::Fixed => parsed_args.push(Argument::Fixed(unsafe { arg.f })),
+            ArgumentType::Fd => parsed_args.push(Argument::Fd(unsafe { arg.h })),
             ArgumentType::Array(_) => {
-                let array = &*((*args.add(i)).a);
-                let content = std::slice::from_raw_parts(array.data as *mut u8, array.size);
+                let array = unsafe { &*arg.a };
+                // TODO
+                let content =
+                    unsafe { std::slice::from_raw_parts(array.data as *mut u8, array.size) };
                 parsed_args.push(Argument::Array(Box::new(content.into())));
             }
             ArgumentType::Str(_) => {
-                let ptr = (*args.add(i)).s;
-                let cstr = std::ffi::CStr::from_ptr(ptr);
+                let ptr = unsafe { arg.s };
+                // SAFETY: cstr.into() makes an owned copy of the string, ensuring the lifetime is correct.
+                let cstr = unsafe { std::ffi::CStr::from_ptr(ptr) };
                 parsed_args.push(Argument::Str(Box::new(cstr.into())));
             }
             ArgumentType::Object(_) => {
-                let obj = (*args.add(i)).o as *mut wl_proxy;
+                let obj = unsafe { arg.o } as *mut wl_proxy;
                 if !obj.is_null() {
                     // retrieve the object relevant info
                     let obj_id = ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_id, obj);
@@ -877,9 +891,10 @@ unsafe extern "C" fn dispatcher_func(
                     let next_interface = arg_interfaces.next().unwrap_or(&ANONYMOUS_INTERFACE);
                     let listener = ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_listener, obj);
                     if listener == &RUST_MANAGED as *const u8 as *const c_void {
-                        let obj_udata =
+                        let obj_udata = unsafe {
                             &*(ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_get_user_data, obj)
-                                as *mut ProxyUserData);
+                                as *mut ProxyUserData)
+                        };
                         if !same_interface(next_interface, obj_udata.interface) {
                             log::error!(
                                 "Received object {}@{} in {}.{} but expected interface {}.",
@@ -916,7 +931,7 @@ unsafe extern "C" fn dispatcher_func(
                 }
             }
             ArgumentType::NewId(_) => {
-                let obj = (*args.add(i)).o as *mut wl_proxy;
+                let obj = unsafe { arg.o } as *mut wl_proxy;
                 // this is a newid, it needs to be initialized
                 if !obj.is_null() {
                     let child_interface = message_desc.child_interface.unwrap_or_else(|| {
@@ -977,7 +992,8 @@ unsafe extern "C" fn dispatcher_func(
     });
 
     if message_desc.is_destructor {
-        let udata = Box::from_raw(udata_ptr);
+        // TODO: Question about Box -> ptr
+        let udata = unsafe { Box::from_raw(udata_ptr) };
         ffi_dispatch!(WAYLAND_CLIENT_HANDLE, wl_proxy_set_user_data, proxy, std::ptr::null_mut());
         udata.alive.store(false, Ordering::Release);
         udata.data.destroyed(id);
@@ -986,7 +1002,8 @@ unsafe extern "C" fn dispatcher_func(
 
     match (created, ret) {
         (Some((_, child_udata_ptr)), Some(child_data)) => {
-            (*child_udata_ptr).data = child_data;
+            // SAFETY: child_udata_ptr was just initialized
+            unsafe { (*child_udata_ptr).data = child_data };
         }
         (Some((child_id, _)), None) => {
             panic!("Callback creating object {} did not provide any object data.", child_id);
