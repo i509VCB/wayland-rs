@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EVT_DEFAULT_MODE_SINCE","The minimal object version supporting this event"],["REQ_CREATE_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Mode","Possible values to use in request_mode and the event mode."],["Request",""]],"struct":[["OrgKdeKwinServerDecorationManager",""]]});

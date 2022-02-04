@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["zwp_text_input_manager_v1","text input manager"],["zwp_text_input_v1","text input"]]});
+initSidebarItems({"mod":[["__interfaces",""],["zwp_text_input_manager_v1","text input manager"],["zwp_text_input_v1","text input"]]});

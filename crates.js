@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["wayland_client","wayland_commons","wayland_cursor","wayland_egl","wayland_protocols","wayland_scanner","wayland_server","wayland_sys"];
+window.ALL_CRATES = ["wayland_backend","wayland_client","wayland_cursor","wayland_egl","wayland_protocols","wayland_scanner","wayland_server","wayland_sys","wayland_tests"];

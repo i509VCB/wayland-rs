@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EVT_TEXT_INPUT_RECTANGLE_SINCE","The minimal object version supporting this event"],["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["ZwpInputPopupSurfaceV2",""]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["drm_lease","This protocol is used by Wayland compositors which act as Direct Renderering Manager (DRM) masters to lease DRM resources to Wayland clients."],["xdg_activation","The way for a client to pass focus to another toplevel is as follows."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"static":[["ZWLR_OUTPUT_POWER_MANAGER_V1_INTERFACE",""],["ZWLR_OUTPUT_POWER_V1_INTERFACE",""],["zwlr_output_power_manager_v1_interface",""],["zwlr_output_power_manager_v1_requests",""],["zwlr_output_power_v1_events",""],["zwlr_output_power_v1_interface",""],["zwlr_output_power_v1_requests",""]]});
