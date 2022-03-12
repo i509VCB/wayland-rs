@@ -1,5 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `wayland-backend&#x2F;src&#x2F;sys&#x2F;client&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../wayland_backend/index.html'><div class='logo-container rust-logo'><img src='../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `wayland-backend&#x2F;src&#x2F;sys&#x2F;client&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../../../wayland_backend/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../wayland_backend/index.html"><img class="rust-logo" src="../../../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1049,10 +1050,65 @@
 <span id="1048">1048</span>
 <span id="1049">1049</span>
 <span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Client-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">cell::RefCell</span>,
+    <span class="ident">collections::HashSet</span>,
     <span class="ident">ffi::CStr</span>,
     <span class="ident">os::raw</span>::{<span class="ident">c_char</span>, <span class="ident">c_int</span>, <span class="ident">c_void</span>},
     <span class="ident">os::unix</span>::{<span class="ident">io::RawFd</span>, <span class="ident">net::UnixStream</span>, <span class="ident">prelude::IntoRawFd</span>},
@@ -1182,14 +1238,19 @@
         <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>,
         <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ObjectId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">ptr_iface_name</span> <span class="op">=</span>
-            <span class="ident">CStr::from_ptr</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_class</span>, <span class="ident">ptr</span>));
-        <span class="kw">let</span> <span class="ident">provided_iface_name</span> <span class="op">=</span> <span class="ident">CStr::from_ptr</span>(
-            <span class="ident">interface</span>
-                .<span class="ident">c_ptr</span>
-                .<span class="ident">expect</span>(<span class="string">&quot;[wayland-backend-sys] Cannot use Interface without c_ptr!&quot;</span>)
-                .<span class="ident">name</span>,
-        );
+        <span class="comment">// Safety: the provided pointer must be a valid wayland object</span>
+        <span class="kw">let</span> <span class="ident">ptr_iface_name</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+            <span class="ident">CStr::from_ptr</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_class</span>, <span class="ident">ptr</span>))
+        };
+        <span class="comment">// Safety: the code generated by wayland-scanner is valid</span>
+        <span class="kw">let</span> <span class="ident">provided_iface_name</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+            <span class="ident">CStr::from_ptr</span>(
+                <span class="ident">interface</span>
+                    .<span class="ident">c_ptr</span>
+                    .<span class="ident">expect</span>(<span class="string">&quot;[wayland-backend-sys] Cannot use Interface without c_ptr!&quot;</span>)
+                    .<span class="ident">name</span>,
+            )
+        };
         <span class="kw">if</span> <span class="ident">ptr_iface_name</span> <span class="op">!</span><span class="op">=</span> <span class="ident">provided_iface_name</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
         }
@@ -1201,8 +1262,11 @@
             <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">RUST_MANAGED</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="kw">_</span>;
 
         <span class="kw">let</span> <span class="ident">alive</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_rust_managed</span> {
-            <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_user_data</span>, <span class="ident">ptr</span>)
-                <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>);
+            <span class="comment">// Safety: the object is rust_managed, so its user-data pointer must be valid</span>
+            <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_user_data</span>, <span class="ident">ptr</span>)
+                    <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>)
+            };
             <span class="prelude-val">Some</span>(<span class="ident">udata</span>.<span class="ident">alive</span>.<span class="ident">clone</span>())
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
@@ -1254,6 +1318,7 @@
     <span class="ident">display_id</span>: <span class="ident">ObjectId</span>,
     <span class="ident">last_error</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">WaylandError</span><span class="op">&gt;</span>,
     <span class="ident">pending_placeholder</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>,
+    <span class="ident">known_proxies</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">wl_proxy</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// A pure rust implementation of a Wayland client backend</span>
@@ -1305,6 +1370,7 @@
                 },
                 <span class="ident">last_error</span>: <span class="prelude-val">None</span>,
                 <span class="ident">pending_placeholder</span>: <span class="prelude-val">None</span>,
+                <span class="ident">known_proxies</span>: <span class="ident">HashSet::new</span>(),
             },
         })
     }
@@ -1728,12 +1794,12 @@
                 }
                 <span class="ident">Argument::Str</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) =&gt; <span class="ident">argument_list</span>.<span class="ident">push</span>(<span class="ident">wl_argument</span> { <span class="ident">s</span>: <span class="ident">s</span>.<span class="ident">as_ptr</span>() }),
                 <span class="ident">Argument::Object</span>(<span class="kw-2">ref</span> <span class="ident">o</span>) =&gt; {
+                    <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
                     <span class="kw">if</span> <span class="op">!</span><span class="ident">o</span>.<span class="ident">ptr</span>.<span class="ident">is_null</span>() {
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">id</span>.<span class="ident">alive</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>)).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
                             <span class="kw">unsafe</span> { <span class="ident">free_arrays</span>(<span class="ident">message_desc</span>.<span class="ident">signature</span>, <span class="kw-2">&amp;</span><span class="ident">argument_list</span>) };
                             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
                         }
-                        <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">same_interface</span>(<span class="ident">next_interface</span>, <span class="ident">o</span>.<span class="ident">interface</span>) {
                             <span class="macro">panic!</span>(<span class="string">&quot;Request {}@{}.{} expects an argument of interface {} but {} was provided instead.&quot;</span>, <span class="ident">id</span>.<span class="ident">interface</span>.<span class="ident">name</span>, <span class="ident">id</span>.<span class="ident">id</span>, <span class="ident">message_desc</span>.<span class="ident">name</span>, <span class="ident">next_interface</span>.<span class="ident">name</span>, <span class="ident">o</span>.<span class="ident">interface</span>.<span class="ident">name</span>);
                         }
@@ -1781,13 +1847,22 @@
                 <span class="ident">id</span>: <span class="kw">unsafe</span> { <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_id</span>, <span class="ident">ret</span>) },
                 <span class="ident">interface</span>: <span class="ident">child_interface</span>,
             };
-            <span class="kw">let</span> <span class="ident">child_udata</span> <span class="op">=</span> <span class="ident">Box::new</span>(<span class="ident">ProxyUserData</span> {
-                <span class="ident">alive</span>: <span class="ident">child_alive</span>,
-                <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">expect</span>(
-                    <span class="string">&quot;Sending a request creating an object without providing an object data.&quot;</span>,
-                ),
-                <span class="ident">interface</span>: <span class="ident">child_interface</span>,
-            });
+            <span class="kw">let</span> <span class="ident">child_udata</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">data</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">data</span>) =&gt; {
+                    <span class="ident">Box::new</span>(<span class="ident">ProxyUserData</span> { <span class="ident">alive</span>: <span class="ident">child_alive</span>, <span class="ident">data</span>, <span class="ident">interface</span>: <span class="ident">child_interface</span> })
+                }
+                <span class="prelude-val">None</span> =&gt; {
+                    <span class="comment">// we destroy this proxy before panicking to avoid a leak, as it cannot be destroyed by the</span>
+                    <span class="comment">// main destructor given it does not yet have a proper user-data</span>
+                    <span class="kw">unsafe</span> {
+                        <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_destroy</span>, <span class="ident">ret</span>);
+                    }
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;Sending a request creating an object without providing an object data.&quot;</span>
+                    );
+                }
+            };
+            <span class="self">self</span>.<span class="ident">known_proxies</span>.<span class="ident">insert</span>(<span class="ident">ret</span>);
             <span class="kw">unsafe</span> {
                 <span class="macro">ffi_dispatch!</span>(
                     <span class="ident">WAYLAND_CLIENT_HANDLE</span>,
@@ -1823,6 +1898,7 @@
                 <span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
                 <span class="ident">udata</span>.<span class="ident">data</span>.<span class="ident">destroyed</span>(<span class="ident">id</span>.<span class="ident">clone</span>());
             }
+            <span class="self">self</span>.<span class="ident">known_proxies</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>.<span class="ident">ptr</span>);
             <span class="kw">unsafe</span> {
                 <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_destroy</span>, <span class="ident">id</span>.<span class="ident">ptr</span>);
             }
@@ -1887,9 +1963,13 @@
     <span class="ident">args</span>: <span class="kw-2">*const</span> <span class="ident">wl_argument</span>,
 ) -&gt; <span class="ident">c_int</span> {
     <span class="kw">let</span> <span class="ident">proxy</span> <span class="op">=</span> <span class="ident">proxy</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>;
-    <span class="kw">let</span> <span class="ident">udata_ptr</span> <span class="op">=</span>
-        <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_user_data</span>, <span class="ident">proxy</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>;
-    <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">udata_ptr</span>;
+
+    <span class="comment">// Safety: if our dispatcher fun is called, then the associated proxy must be rust_managed and have a valid user_data</span>
+    <span class="kw">let</span> <span class="ident">udata_ptr</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+        <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_user_data</span>, <span class="ident">proxy</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>
+    };
+    <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">udata_ptr</span> };
+
     <span class="kw">let</span> <span class="ident">interface</span> <span class="op">=</span> <span class="ident">udata</span>.<span class="ident">interface</span>;
     <span class="kw">let</span> <span class="ident">message_desc</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">interface</span>.<span class="ident">events</span>.<span class="ident">get</span>(<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>) {
         <span class="prelude-val">Some</span>(<span class="ident">desc</span>) =&gt; <span class="ident">desc</span>,
@@ -1903,24 +1983,28 @@
         <span class="ident">SmallVec</span>::<span class="op">&lt;</span>[<span class="ident">Argument</span><span class="op">&lt;</span><span class="ident">ObjectId</span><span class="op">&gt;</span>; <span class="number">4</span>]<span class="op">&gt;</span><span class="ident">::with_capacity</span>(<span class="ident">message_desc</span>.<span class="ident">signature</span>.<span class="ident">len</span>());
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">arg_interfaces</span> <span class="op">=</span> <span class="ident">message_desc</span>.<span class="ident">arg_interfaces</span>.<span class="ident">iter</span>().<span class="ident">copied</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">created</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+    <span class="comment">// Safety (args deference): the args array provided by libwayland is well-formed</span>
     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">typ</span>) <span class="kw">in</span> <span class="ident">message_desc</span>.<span class="ident">signature</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
         <span class="kw">match</span> <span class="ident">typ</span> {
-            <span class="ident">ArgumentType::Uint</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Uint</span>((<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">u</span>)),
-            <span class="ident">ArgumentType::Int</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Int</span>((<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">i</span>)),
-            <span class="ident">ArgumentType::Fixed</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Fixed</span>((<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">f</span>)),
-            <span class="ident">ArgumentType::Fd</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Fd</span>((<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">h</span>)),
+            <span class="ident">ArgumentType::Uint</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Uint</span>(<span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">u</span> })),
+            <span class="ident">ArgumentType::Int</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Int</span>(<span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">i</span> })),
+            <span class="ident">ArgumentType::Fixed</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Fixed</span>(<span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">f</span> })),
+            <span class="ident">ArgumentType::Fd</span> =&gt; <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Fd</span>(<span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">h</span> })),
             <span class="ident">ArgumentType::Array</span>(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">array</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span>((<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">a</span>);
-                <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">array</span>.<span class="ident">data</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>, <span class="ident">array</span>.<span class="ident">size</span>);
+                <span class="kw">let</span> <span class="ident">array</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span>((<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">a</span>) };
+                <span class="comment">// Safety: the array provided by libwayland must be valid</span>
+                <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span>
+                    <span class="kw">unsafe</span> { <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">array</span>.<span class="ident">data</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>, <span class="ident">array</span>.<span class="ident">size</span>) };
                 <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Array</span>(<span class="ident">Box::new</span>(<span class="ident">content</span>.<span class="ident">into</span>())));
             }
             <span class="ident">ArgumentType::Str</span>(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">s</span>;
-                <span class="kw">let</span> <span class="ident">cstr</span> <span class="op">=</span> <span class="ident">std::ffi::CStr::from_ptr</span>(<span class="ident">ptr</span>);
+                <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">s</span> };
+                <span class="comment">// Safety: the c-string provided by libwayland must be valid</span>
+                <span class="kw">let</span> <span class="ident">cstr</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">std::ffi::CStr::from_ptr</span>(<span class="ident">ptr</span>) };
                 <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">cstr</span>.<span class="ident">into</span>())));
             }
             <span class="ident">ArgumentType::Object</span>(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">o</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>;
+                <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">o</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span> };
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() {
                     <span class="comment">// retrieve the object relevant info</span>
                     <span class="kw">let</span> <span class="ident">obj_id</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_id</span>, <span class="ident">obj</span>);
@@ -1928,9 +2012,11 @@
                     <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>().<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="ident">ANONYMOUS_INTERFACE</span>);
                     <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_listener</span>, <span class="ident">obj</span>);
                     <span class="kw">if</span> <span class="ident">listener</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">RUST_MANAGED</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">c_void</span> {
-                        <span class="kw">let</span> <span class="ident">obj_udata</span> <span class="op">=</span>
+                        <span class="comment">// Safety: the object is rust-managed, its user-data must be valid</span>
+                        <span class="kw">let</span> <span class="ident">obj_udata</span> <span class="op">=</span> <span class="kw">unsafe</span> {
                             <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_user_data</span>, <span class="ident">obj</span>)
-                                <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>);
+                                <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>)
+                        };
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">same_interface</span>(<span class="ident">next_interface</span>, <span class="ident">obj_udata</span>.<span class="ident">interface</span>) {
                             <span class="macro">log::error!</span>(
                                 <span class="string">&quot;Received object {}@{} in {}.{} but expected interface {}.&quot;</span>,
@@ -1967,7 +2053,7 @@
                 }
             }
             <span class="ident">ArgumentType::NewId</span>(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">o</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>;
+                <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">o</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span> };
                 <span class="comment">// this is a newid, it needs to be initialized</span>
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() {
                     <span class="kw">let</span> <span class="ident">child_interface</span> <span class="op">=</span> <span class="ident">message_desc</span>.<span class="ident">child_interface</span>.<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
@@ -2021,14 +2107,22 @@
     };
 
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">HANDLE</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">handle</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">handle</span>.<span class="ident">borrow_mut</span>();
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="kw-2">ref</span> <span class="ident">new_id</span>, <span class="kw">_</span>)) <span class="op">=</span> <span class="ident">created</span> {
+            <span class="ident">handle</span>.<span class="ident">known_proxies</span>.<span class="ident">insert</span>(<span class="ident">new_id</span>.<span class="ident">ptr</span>);
+        }
+        <span class="kw">if</span> <span class="ident">message_desc</span>.<span class="ident">is_destructor</span> {
+            <span class="ident">handle</span>.<span class="ident">known_proxies</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">proxy</span>);
+        }
         <span class="ident">udata</span>.<span class="ident">data</span>.<span class="ident">clone</span>().<span class="ident">event</span>(
-            <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">handle</span>.<span class="ident">borrow_mut</span>(),
+            <span class="kw-2">&amp;mut</span> <span class="ident">handle</span>,
             <span class="ident">Message</span> { <span class="ident">sender_id</span>: <span class="ident">id</span>.<span class="ident">clone</span>(), <span class="ident">opcode</span>: <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">u16</span>, <span class="ident">args</span>: <span class="ident">parsed_args</span> },
         )
     });
 
     <span class="kw">if</span> <span class="ident">message_desc</span>.<span class="ident">is_destructor</span> {
-        <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="ident">Box::from_raw</span>(<span class="ident">udata_ptr</span>);
+        <span class="comment">// Safety: the udata_ptr must be valid as we are in a rust-managed object, and we are done with using udata</span>
+        <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Box::from_raw</span>(<span class="ident">udata_ptr</span>) };
         <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_set_user_data</span>, <span class="ident">proxy</span>, <span class="ident">std::ptr::null_mut</span>());
         <span class="ident">udata</span>.<span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
         <span class="ident">udata</span>.<span class="ident">data</span>.<span class="ident">destroyed</span>(<span class="ident">id</span>);
@@ -2037,7 +2131,10 @@
 
     <span class="kw">match</span> (<span class="ident">created</span>, <span class="ident">ret</span>) {
         (<span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="ident">child_udata_ptr</span>)), <span class="prelude-val">Some</span>(<span class="ident">child_data</span>)) =&gt; {
-            (<span class="kw-2">*</span><span class="ident">child_udata_ptr</span>).<span class="ident">data</span> <span class="op">=</span> <span class="ident">child_data</span>;
+            <span class="comment">// Safety: child_udata_ptr is valid, we created it earlier</span>
+            <span class="kw">unsafe</span> {
+                (<span class="kw-2">*</span><span class="ident">child_udata_ptr</span>).<span class="ident">data</span> <span class="op">=</span> <span class="ident">child_data</span>;
+            }
         }
         (<span class="prelude-val">Some</span>((<span class="ident">child_id</span>, <span class="kw">_</span>)), <span class="prelude-val">None</span>) =&gt; {
             <span class="macro">panic!</span>(<span class="string">&quot;Callback creating object {} did not provide any object data.&quot;</span>, <span class="ident">child_id</span>);
@@ -2058,7 +2155,19 @@
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Backend</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">evq</span>.<span class="ident">is_null</span>() {
-            <span class="comment">// we are own the connection, clone it</span>
+            <span class="comment">// we are own the connection, cleanup and close it</span>
+            <span class="kw">for</span> <span class="ident">proxy_ptr</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">known_proxies</span>.<span class="ident">drain</span>() {
+                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+                    <span class="ident">Box::from_raw</span>(<span class="macro">ffi_dispatch!</span>(
+                        <span class="ident">WAYLAND_CLIENT_HANDLE</span>,
+                        <span class="ident">wl_proxy_get_user_data</span>,
+                        <span class="ident">proxy_ptr</span>
+                    ) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>)
+                };
+                <span class="kw">unsafe</span> {
+                    <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_destroy</span>, <span class="ident">proxy_ptr</span>);
+                }
+            }
             <span class="kw">unsafe</span> {
                 <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_display_disconnect</span>, <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">display</span>)
             }
@@ -2100,5 +2209,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="wayland_backend" data-search-index-js="../../../../search-index.js" data-search-js="../../../../search.js"></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="wayland_backend" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
 </body></html>
